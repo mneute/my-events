@@ -6,15 +6,15 @@
 {% block contenu %}
 
 <h1> Notifications </h1>
-<div id="demande-amis-list"></div>
 {% if app.user %}
-    <div id="amis-list" data-utilisateur="{{app.user.username}}" data-id="{{app.user.id}}"></div>
+<div id="demande-amis-list"></div>
+<div id="amis-list" data-utilisateur="{{app.user.username}}" data-id="{{app.user.id}}"></div>
 {% endif %}
 <div id="info-utilisateur"></div>
 <div id="chat"></div>
 
 
-<script type='text/template' id='demande-amis-list-template'>
+<script type="text/template" id="demande-amis-list-template">
     <nav class="navbar navbar-default" role="navigation">
       <div class="container-fluid">
         <div class="navbar-header">
@@ -41,7 +41,7 @@
     </nav>
 </script>
 
-<script type='text/template' id='amis-list-template'>
+<script type="text/template" id="amis-list-template">
     <nav class="navbar navbar-default" role="navigation">
       <div class="container-fluid">
         <div class="navbar-header">
@@ -70,7 +70,7 @@
 
 
 
-<script type='text/javascript'>
+<script type="text/javascript">
     require([
         'jquery',
         'amis_collection',
@@ -84,10 +84,10 @@
       ) {
           // Defer initialization until doc ready.
           $(function() {
-            var demandeAmisCollection = new AmisCollection({{listeDemandeAmis|json_encode|raw }}),
-                listeAmisCollection = new AmisCollection({{listeAmis|json_encode|raw }}),
-            demandeAmisView = new DemandeAmisView({collection: demandeAmisCollection, listAmis: listeAmisCollection}),
-            listAmisView = new ListAmisView({collection: listeAmisCollection});
+            var demandeAmisCollection = new AmisCollection({{ listeDemandeAmis|json_encode|raw }}),
+                listeAmisCollection = new AmisCollection({{ listeAmis|json_encode|raw }}),
+                demandeAmisView = new DemandeAmisView({collection: demandeAmisCollection, listAmis: listeAmisCollection}),
+                listAmisView = new ListAmisView({collection: listeAmisCollection});
             
             demandeAmisView.render();
             listAmisView.render();
