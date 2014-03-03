@@ -1,8 +1,0 @@
-Pour faire fonctionner le chat :
-	- Télécharger node.js sur son site -> "http://nodejs.org/"
-	- L'installer
-	- Ouvrir node js command prompt
-	- Aller dans le dossier	web/js
-	- Lancer npm install (installe tous les modules node nécessaire)
-	- Lancer node nodeServer.js (créer le serveur node pour le chat)
-	- Et voila un chat privé entre utilisateur fonctionnel à 90% (environ)
