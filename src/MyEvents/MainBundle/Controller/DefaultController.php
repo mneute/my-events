@@ -30,14 +30,15 @@ class DefaultController extends Controller {
 	public function accueilAction() {
 
 		$toListeDemandeAmis = [];
-		$listeAmis = [];
-		if ($this->oUtilisateurConnecte) {
+		$toListeAmis = [];
+		if (!is_null($this->oUtilisateurConnecte)) {
 			$toListeDemandeAmis = $this->oUtilisateurConnecte->getListesDemandeAmiEnAttente($this->oUtilisateurConnecte);
-			$listeAmis = $this->oUtilisateurConnecte->getListeAmisValides($this->oUtilisateurConnecte);
+			$toListeAmis = $this->oUtilisateurConnecte->getListeAmisValides();
 		}
 
 		$tListeDemandeAmis = [];
 		foreach ($toListeDemandeAmis as $key => $oAmi) {
+			/* @var $oAmi Utilisateur */
 			$tListeDemandeAmis[] = [
 			   'idDemandeAmi' => $key,
 			   'idUtilisateur' => $oAmi->getId(),
@@ -47,9 +48,9 @@ class DefaultController extends Controller {
 			];
 		}
 
-		$amis = [];
-		foreach ($listeAmis as $ami) {
-			$amis[] = [
+		$tAmis = [];
+		foreach ($toListeAmis as $ami) {
+			$tAmis[] = [
 			   'id' => $ami->getId(),
 			   'nom' => $ami->getNom(),
 			   'prenom' => $ami->getPrenom(),
@@ -57,6 +58,6 @@ class DefaultController extends Controller {
 			];
 		}
 
-		return ['listeDemandeAmis' => $tListeDemandeAmis, 'listeAmis' => $amis];
+		return ['listeDemandeAmis' => $tListeDemandeAmis, 'listeAmis' => $tAmis];
 	}
 }
