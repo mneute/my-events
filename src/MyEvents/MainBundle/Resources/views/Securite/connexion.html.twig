@@ -1,0 +1,34 @@
+{% extends 'MainBundle::layout.html.twig' %}
+
+{% block title %}Connexion{% endblock %}
+
+{% block contenu %}
+<form id="form-login" action="{{ path('verifie_login') }}" method="POST" class="form-horizontal">
+    {% for flashMessage in app.session.flashbag.get('notice') %}
+    {% if flashMessage != '' %}
+    <div class="bg-danger flash-notice">
+        {{ flashMessage }}
+    </div>
+    {% endif %}
+    {% endfor %}
+    <div class="form-group">
+        <label for="username" class="col-sm-3 control-label">Login</label>
+        <div class="col-sm-9">
+            <input id="username" type="text" name="_username" required="required" value="{{ lastUsername }}" class="form-control" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="password" class="col-sm-3 control-label">Mot de passe</label>
+        <div class="col-sm-9">
+            <input id="password" type="password" name="_password" required="required" class="form-control" />
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+            <input type="hidden" name="_target_path" value="{{ referer }}"/>
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+            <input type="submit" value="Valider" class="btn btn-default" role="button"/>
+        </div>
+    </div>
+</form>
+{% endblock %}

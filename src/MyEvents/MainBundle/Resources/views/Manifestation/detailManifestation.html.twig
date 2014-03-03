@@ -1,0 +1,139 @@
+{% extends 'MainBundle::layout.html.twig' %}
+{% import _self as self %}
+
+{% block title %}{{ manifestation.nom }}{% endblock %}
+
+{% block js %}
+{{ parent() }}
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key={{ google.maps.key }}&sensor=false&libraries=drawing"></script>
+<script type="text/javascript" src="{{ asset('js/detail-manifestation.js') }}"></script>
+{% endblock %}
+
+{% block contenu %}
+<div id="conteneur-manifestation" class="center-block">
+    {% for flashMessage in app.session.flashbag.get('notice') %}
+    {% if flashMessage != '' %}
+    <div class="bg-success flash-notice">
+        {{ flashMessage }}
+    </div>
+    {% endif %}
+    {% endfor %}
+    <div class="form-horizontal">
+        <fieldset>
+            <legend>Description</legend>
+            {% if manifestation.utilisateurEstCreateur(app.user) %}
+            <p class="text-center text-success">
+                Vous êtes le <em>créateur</em> de cet évènement.
+            </p>
+            {% endif %}
+            <input type="hidden" id="manifestation-id" value="{{ manifestation.id }}" />
+            {{ self.afficher('Nom', manifestation.nom) }}
+            {{ self.afficher('Lieu', manifestation.adresse, true) }}
+            {{ self.afficher('Début', manifestation.dateDebut|date('d/m/Y H:i:s')) }}
+            {{ self.afficher('Fin', manifestation.dateFin|date('d/m/Y H:i:s')) }}
+            {{ self.afficher('Participants', manifestation.participations|length) }}
+            {{ self.afficher('Organisateurs', manifestation.organisations|length) }}
+        </fieldset>
+    </div>
+    <div id="inscriptions-manifestation">
+        <fieldset>
+            <legend>Inscriptions</legend>
+            {% if app.user %}
+                {% if manifestation.utilisateurEstParticipant(app.user) %}
+            <p class="text-center text-success">
+                Vous êtes inscrit à cet évènement en tant que <em>participant</em>.
+            </p>
+                {% elseif manifestation.utilisateurEstOrganisateur(app.user) %}
+            <p class="text-center text-success">
+                Vous êtes inscrit à cet évènement en tant qu'<em>organisateur</em>.
+            </p>
+                {% else %}
+            <div id="btn-inscription">
+                <button role="button" class="btn btn-info" data-toggle="modal" data-target="#manifestation-participation">S'inscrire en tant que participant</button>
+                <button role="button" class="btn btn-info" data-toggle="modal" data-target="#manifestation-organisation">S'inscrire en tant qu'organisateur</button>
+            </div>
+                {% endif %}
+            {% else %}
+            Pour vous inscrire a cet évènement, veuillez vous <a href="{{ path('connexion') }}">connecter</a> ou <a href="{{ path('inscription') }}">créer un compte</a>.
+            {% endif %}
+        </fieldset>
+    </div>
+    <div id="conteneur-map-manifestation">
+        <fieldset>
+            <legend>Repères</legend>
+            <div id="menu-map-manifestation">
+                {% if manifestation.peutEtreEditePar(app.user) %}
+                <button id="add-marker" role="button" class="btn btn-primary btn-sm">Ajouter un marqueur</button>
+                {% endif %}
+            </div>
+            <div id="map-manifestation"></div>
+        </fieldset>
+    </div>
+</div>
+
+<div id="modals">
+    <div id="manifestation-participation" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Participer a l'évènement <em>{{ manifestation.nom }}</em></h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        Veuillez confirmer votre participation a l'évènement <em>{{ manifestation.nom }}</em>.
+                    </p>
+                    <p>
+                        Le point de rendez-vous est fixé a :<br/>
+                        <em>{{ manifestation.adresse }}</em>,<br/>
+                        le <em>{{ manifestation.dateDebut|date('d/m/Y H:i:s') }}</em>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Annuler</button>
+                    <button type="button" class="btn btn-success" id="confirm-participation">Confirmer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="manifestation-organisation" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Organiser l'évènement <em>{{ manifestation.nom }}</em></h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        Veuillez confirmer votre participation a l'organisation de l'évènement <em>{{ manifestation.nom }}</em>.
+                    </p>
+                    <p>
+                        Le point de rendez-vous est fixé a :<br/>
+                        <em>{{ manifestation.adresse }}</em>,<br/>
+                        le <em>{{ manifestation.dateDebut|date('d/m/Y H:i:s') }}</em>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Annuler</button>
+                    <button type="button" class="btn btn-success" id="confirm-organisation">Confirmer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+{% macro afficher(label, valeur, ajouterSpanErreur) %}
+<div class="form-group">
+    <label class="col-sm-3 control-label">{{ label }}</label>
+    <div class="col-sm-9">
+        <p class="form-control-static" id="manifestation-{{ label }}">
+            {{ valeur }}
+            {% if ajouterSpanErreur|default(false) %}
+            <span class="glyphicon glyphicon-remove" style="display: none;" title="Valeur incorrecte"></span>
+            {% endif %}
+        </p>
+    </div>
+</div>
+{% endmacro %}

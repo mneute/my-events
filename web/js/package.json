@@ -1,0 +1,13 @@
+{
+    "name": "my-events-chat",
+    "version": "0.1.0",
+    "dependencies": {
+        "socket.io": "latest",
+        "express": "latest",
+        "jade": "latest",
+		"mysql": "latest",
+		"ent": "latest"
+    },
+    "author": "developer",
+    "description": "Un super Chat temps réel avec socket.io"
+}

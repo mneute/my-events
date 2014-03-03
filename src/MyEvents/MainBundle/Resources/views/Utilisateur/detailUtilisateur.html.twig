@@ -1,0 +1,57 @@
+{% import _self as self %}
+
+{% spaceless %}
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h4 class="modal-title">{{ utilisateur.prenom }} {{ utilisateur.nom }}</h4>
+</div>
+<div class="modal-body">
+    <div class="form-horizontal">
+        <input type="hidden" id="idUtilisateur" value="{{ utilisateur.id }}"/>
+        {{ self.afficher('Email', utilisateur.email) }}
+        {{ self.afficher('Adresse', utilisateur.adresse, true) }}
+        {{ self.afficher('Participation', self.nbEvenements(utilisateur.participations)) }}
+        {{ self.afficher('Organisation', self.nbEvenements(utilisateur.organisations)) }}
+        {{ self.afficher('Créateur', self.nbEvenements(utilisateur.manifestations)) }}
+    </div>
+
+    <div id="map-utilisateur"/>
+</div>
+<div class="modal-footer">
+    {% if app.user != utilisateur %}
+        {% if app.user.estAmiAvec(utilisateur) %}
+    <span class="text-success">{{ utilisateur.prenom }} {{ utilisateur.nom }} est votre ami <span class="glyphicon glyphicon-ok"></span></span>&nbsp;
+        {% else %}
+            {% if app.user.estAmiEnAttenteAvec(utilisateur) %}
+    <button type="button" class="btn btn-primary disabled">Demande en attente de réponse</button>
+            {% else %}
+    <button id="demander-ami" type="button" class="btn btn-primary">Demander en ami</button>
+            {% endif %}
+        {% endif %}
+    {% endif %}
+    <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+</div>
+{% endspaceless %}
+
+
+{% macro afficher(label, valeur, ajouterSpanErreur) %}
+<div class="form-group">
+    <label class="col-sm-3 control-label">{{ label }}</label>
+    <div class="col-sm-9">
+        <p class="form-control-static" id="utilisateur-{{ label }}">
+            {{ valeur }}
+            {% if ajouterSpanErreur|default(false) %}
+            <span class="glyphicon glyphicon-remove" style="display: none;" title="Valeur incorrecte"></span>
+            {% endif %}
+        </p>
+    </div>
+</div>
+{% endmacro %}
+
+{% macro nbEvenements(champ) %}
+{% set retour = champ|length ~ ' évènement' %}
+{% if champ|length >= 2 %}
+    {% set retour = retour ~ 's' %}
+{% endif %}
+{{ retour }}
+{% endmacro %}

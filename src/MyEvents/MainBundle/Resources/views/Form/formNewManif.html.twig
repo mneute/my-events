@@ -1,0 +1,24 @@
+<script type="text/template" id="form-new-manifestation-template">
+    <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">Ajouter une manifestation</h4>
+      </div>
+      <div class="modal-body">
+         <form id="newManif" action="<%= url %>" method="POST" class="form-horizontal" role="form" {{ form_enctype(form) }}>
+            {{ form_row(form.nom) }}
+            {{ form_row(form.dateDebut) }}
+            {{ form_row(form.dateFin) }}
+            {{ form_row(form.adresse) }}
+            {{ form_row(form.utilisateurCreateur) }}
+
+            {{ form_rest(form) }}
+        
+            <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
+            <button type="submit" class="btn btn-primary submitManif">Valider</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</script> 

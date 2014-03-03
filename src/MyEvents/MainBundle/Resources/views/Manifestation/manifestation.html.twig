@@ -1,0 +1,127 @@
+{% extends 'MainBundle::layout.html.twig' %}
+
+{% block title %}
+Manifestations
+{% endblock %}
+
+
+
+{% block css %}
+{{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/main.css') }}"/>
+{% endblock %}
+
+{% block contenu %}
+    <h1> Liste des manifestations à venir</h1>
+    <div class="table-responsive">
+        <table class="manifestation table table-hover table-striped">
+            <thead>
+                <tr>
+                    <th class="manif" data-attribute="id"> Identifiant </th>
+                    <th class="manif" data-attribute="nom"> Nom </th>
+                    <th class="manif" data-attribute="dateDebut"> Date de début </th>
+                        <th class="manif" data-attribute="dateFin"> Date de fin </th>
+                    {% if app.user %}
+                        <th class="manif" data-attribute="adresse"> Adresse </th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody id="manifestation-list"></tbody>
+        </table>
+    </div>
+    {% if app.user %}
+        <button class="newManif" type="button" data-toggle="modal" data-target=".formManif" class="btn btn-default newManif">Nouvelle manifestation</button>
+    {% endif %}
+        <div class="formManif modal fade" role="dialog" aria-hidden="true"></div>
+        
+    {% block footer %}
+        <div id="manifestation-pagination"></div>
+    {% endblock %}
+<script type="text/template" id="manifestation-pagination-template">
+    <% if (totalRecords != 0) { %>
+        <span class="cell last pages">
+            <% if (page != 1) { %>
+                <a href="#" class="first">Première Page </a>
+                <% if (page != 2) { %>
+                    <a href="#" class="prev">Page Précédente</br></a>
+               <% } %>
+            <% } %>
+            <% _.each (pageSet, function (p) { %>
+                <% if (page == p) { %>
+                    <span class="page selected"><%= p %></span>
+                <% } else { %>
+                    <a href="#" class="page"><%= p %></br></a>
+                <% } %>
+            <% }); %>
+            <% if (lastPage != page) { %>
+                <a href="#" class="next">Page Suivante </a>
+                <a href="#" class="last">Dernière Page</br></a>
+            <% } %>
+        </span>
+
+        <span class="cell howmany">
+            Afficher
+            <a href="#" class="selected">20</a>
+            |
+            <a href="#" class="">50</a>
+            |
+            <a href="#" class="">100</br></a>
+        </span>
+
+        <span class="cell first records">
+                <span class="current"><%= startRecord %></span>
+                -
+                <span class="perpage"><%= endRecord %></span>
+                sur
+                <span class="total"><%= totalRecords %></span>
+                affiché
+        </span>
+    <% } else { %>
+        <div class="noData"> Pas de manifestation disponible actuellement </div>
+    <% } %>
+
+</script>
+
+<script type="text/template" id ="manifestation-list-template">
+    <tr>
+        <td class="id"> <a href="{{ path('detail-manifestation') }}/<%= manif.id %>"><%= manif.id %></a> </td>
+        <td class="nom"> <%= manif.nom %> </td>
+        <td class="prenom"> <%= manif.dateDebut %> </td>
+        <td class="adresse"> <%= manif.dateFin %> </td>
+        {% if app.user %}
+            <td class="email"> <%= manif.adresse %> </td>
+        {% endif %}
+    </tr>
+</script>
+
+<script type="text/javascript">
+
+require([
+  'jquery',
+  'manif_paginated_collection',
+  'manif_app_view',
+  'manif_pagination_view',
+  'manif_navigation_view'
+], function(
+  $,
+  ManifestationPaginatedCollection,
+  ManifestationAppView,
+  ManifestationPaginationView,
+  ManifestationNavigationView
+) {
+    // Defer initialization until doc ready.
+    $(function() {
+      var collection = new ManifestationPaginatedCollection({{listeManifestations|json_encode|raw }}, {
+        displayPerPage: 5
+      });
+      
+      var listView = new ManifestationAppView({collection: collection, url: "{{ urlFormAction }}"});
+      var paginationView = new ManifestationPaginationView({collection: collection});
+      var navigationView = new ManifestationNavigationView({collection: collection});
+      collection.pager();
+
+    });
+});
+  
+</script>
+{% endblock %}

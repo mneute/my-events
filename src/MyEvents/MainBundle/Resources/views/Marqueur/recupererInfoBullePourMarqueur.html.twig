@@ -1,0 +1,27 @@
+{% spaceless %}
+<div class="infobulle">
+    <div class="infobulle-head">
+        {{ marqueur.nom }}
+    </div>
+    <div class="infobulle-body">
+        <div class="infobulle-form-row">
+            <div class="libelle">Organisateurs</div>
+            <div class="valeur">{{ marqueur.organisations|length }}</div>
+        </div>
+        <div class="infobulle-form-row">
+            <div class="libelle">Début le</div>
+            <div class="valeur">{{ marqueur.dateDebut|date('d/m/Y H:i:s') }}</div>
+        </div>
+        <div class="infobulle-form-row">
+            <div class="libelle">Fin le</div>
+            <div class="valeur">{{ marqueur.dateFin|date('d/m/Y H:i:s') }}</div>
+        </div>
+    </div>
+    <div class="infobulle-foot">
+        {% if marqueur.peutEtreEditePar(app.user) %}
+        <button role="button" class="btn btn-danger btn-xs" id="supprimer-marqueur">Supprimer le marqueur</button>
+        <button role="button" class="btn btn-primary btn-xs" id="confirmer-suppression-marqueur" style="display: none;">Confirmer la suppression</button>
+        {% endif %}
+    </div>
+</div>
+{% endspaceless %}

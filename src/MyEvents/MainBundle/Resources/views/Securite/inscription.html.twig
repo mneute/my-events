@@ -1,0 +1,23 @@
+{% extends 'MainBundle::layout.html.twig' %}
+
+{% block title %}Inscription{% endblock %}
+
+{% block contenu %}
+<form id="inscription-utilisateur" action="{{ path('inscription') }}" method="POST" class="form-horizontal" role="form">
+    {{ form_row(form.username) }}
+    {{ form_row(form.email) }}
+    {{ form_row(form.plainPassword) }}
+    {{ form_row(form.repeatPassword) }}
+    {{ form_row(form.prenom) }}
+    {{ form_row(form.nom) }}
+    {{ form_row(form.adresse) }}
+
+    {{ form_rest(form) }}
+
+    <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-9">
+            <button type="submit" class="btn btn-default">Valider</button>
+        </div>
+    </div>
+</form>
+{% endblock %}

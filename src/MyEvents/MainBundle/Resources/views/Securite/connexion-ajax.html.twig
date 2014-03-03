@@ -1,0 +1,18 @@
+<form action="{{ path('verifie_login') }}" method="POST">
+    <div>
+        <label for="username">Login</label>
+        <input id="username" type="text" name="_username" required="required" value="{{ lastUsername }}" />
+    </div>
+    <div>
+        <label for="password">Mot de passe</label>
+        <input id="password" type="password" name="_password" required="required" />
+    </div>
+    <div>
+        <input type="hidden" name="_target_path" value="{{ referer }}"/>
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+        <input type="submit" value="Valider" />
+    </div>
+    <div>
+        <a id="annuler-login" href="#">Annuler</a>
+    </div>
+</form>

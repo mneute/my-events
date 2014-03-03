@@ -1,0 +1,98 @@
+{% extends 'MainBundle::layout.html.twig' %}
+
+{% block title %}Accueil{% endblock %}
+
+
+{% block contenu %}
+
+<h1> Notifications </h1>
+<div id="demande-amis-list"></div>
+{% if app.user %}
+    <div id="amis-list" data-utilisateur="{{app.user.username}}" data-id="{{app.user.id}}"></div>
+{% endif %}
+<div id="info-utilisateur"></div>
+<div id="chat"></div>
+
+
+<script type='text/template' id='demande-amis-list-template'>
+    <nav class="navbar navbar-default" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#demandeAmis">
+            <span class="sr-only">Demande d'amis</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#" data-toggle="collapse" data-target="#bs-example-navbar-collapse-4">Liste des demandes d'amitiés</a>
+        </div>
+        <div class="collapse navbar-collapse" id="demandeAmis">
+          <% amis.each(function(ami){ %>
+            <div class="ami navbar-text">
+                <a href="{{ path('detail-utilisateur') }}/<%= ami.get('idUtilisateur') %>" class="detail-utilisateur" >
+                    <%= ami.get('nom') %>&nbsp;<%= ami.get('prenom') %>
+                </a>
+                <a href="{{ path('repondre-demande') }}/<%= ami.get('idDemandeAmi') %>" type="button" data-response="false" data-demande="<%= ami.get('idDemandeAmi') %>" class="btn btn-danger amis reponse">Refuser</a>
+                <a href="{{ path('repondre-demande') }}/<%= ami.get('idDemandeAmi') %>" type="button" data-response="true" data-demande="<%= ami.get('idDemandeAmi') %>" class="btn btn-success amis reponse">Accepter</a>
+           </div>
+          <% }); %>
+        </div>
+      </div>
+    </nav>
+</script>
+
+<script type='text/template' id='amis-list-template'>
+    <nav class="navbar navbar-default" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#listeAmis">
+            <span class="sr-only">Demande d'amis</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#" data-toggle="collapse" data-target="#bs-example-navbar-collapse-4">Liste des amis</a>
+        </div>
+        <div class="collapse navbar-collapse" id="listeAmis">
+          <% amis.each(function(ami){ %>
+            <div class="ami navbar-text">
+                <a href="{{ path('detail-utilisateur') }}/<%= ami.get('id') %>" class="detail-utilisateur" >
+                    <%= ami.get('nom') %>&nbsp;<%= ami.get('prenom') %>
+                </a>
+                <span class=" chat glyphicon glyphicon-comment" data-destinataire="<%= ami.get('username')%>" data-id="<%= ami.get('id') %>"></span>
+           </div>
+           </br>
+          <% }); %>
+        </div>
+      </div>
+    </nav>
+</script>
+
+
+
+<script type='text/javascript'>
+    require([
+        'jquery',
+        'amis_collection',
+        'demande_amis_view',
+        'list_amis_view'
+      ], function(
+        $,
+        AmisCollection,
+        DemandeAmisView,
+        ListAmisView
+      ) {
+          // Defer initialization until doc ready.
+          $(function() {
+            var demandeAmisCollection = new AmisCollection({{listeDemandeAmis|json_encode|raw }}),
+                listeAmisCollection = new AmisCollection({{listeAmis|json_encode|raw }}),
+            demandeAmisView = new DemandeAmisView({collection: demandeAmisCollection, listAmis: listeAmisCollection}),
+            listAmisView = new ListAmisView({collection: listeAmisCollection});
+            
+            demandeAmisView.render();
+            listAmisView.render();
+            
+          });
+      });
+</script>
+{% endblock %}

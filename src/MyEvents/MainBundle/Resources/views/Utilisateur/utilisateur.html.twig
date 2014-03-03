@@ -1,0 +1,144 @@
+{% extends 'MainBundle::layout.html.twig' %}
+
+{% block title %}
+Utilisateurs
+{% endblock %}
+
+{% block js %}
+{{ parent() }}
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key={{ google.maps.key }}&sensor=false"></script>
+{% endblock %}
+
+{% block css %}
+{{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/main.css') }}"/>
+{% endblock %}
+
+{% block contenu %}
+    <div id="utilisateur-navigation"></div>
+    <div class="table-responsive">
+        <table class="utilisateur table table-hover table-striped">
+            <thead>
+                <tr>
+                    <th class="membre" data-attribute="id"> Identifiant </th>
+                    <th class="membre" data-attribute="nom"> Nom </th>
+                    <th class="membre" data-attribute="prenom"> Prénom </th>
+                    {% if app.user %}
+                    <th class="membre" data-attribute="adresse"> Adresse </th>
+                    <th class="membre" data-attribute="email"> Email </th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody id="utilisateur-list"></tbody>
+        </table>
+    </div>
+    <div id="chat"></div>
+    {% block footer %}
+    <div id="utilisateur-pagination"></div>
+    {% endblock %}
+    
+    <div class="modal fade" id="editUtilisateur" tabindex="-1" role="dialog" aria-labelledby="editUtilisateurLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Fiche utilisateur</h4>
+                </div>
+                <div class="modal-body">
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+<script type="text/template" id="utilisateur-pagination-template">
+    <% if (totalRecords != 0) { %>
+        <span class="cell last pages">
+            <% if (page != 1) { %>
+                <a href="#" class="first">Première Page </a>
+                <% if (page != 2) { %>
+                    <a href="#" class="prev">Page Précédente</br></a>
+               <% } %>
+            <% } %>
+            <% _.each (pageSet, function (p) { %>
+                <% if (page == p) { %>
+                    <span class="page selected"><%= p %></span>
+                <% } else { %>
+                    <a href="#" class="page"><%= p %></br></a>
+                <% } %>
+            <% }); %>
+            <% if (lastPage != page) { %>
+                <a href="#" class="next">Page Suivante </a>
+                <a href="#" class="last">Dernière Page</br></a>
+            <% } %>
+        </span>
+
+        <span class="cell howmany">
+            Afficher
+            <a href="#" class="selected">20</a>
+            |
+            <a href="#" class="">50</a>
+            |
+            <a href="#" class="">100</br></a>
+        </span>
+
+        <span class="cell first records">
+                <span class="current"><%= startRecord %></span>
+                -
+                <span class="perpage"><%= endRecord %></span>
+                sur
+                <span class="total"><%= totalRecords %></span>
+                affiché
+        </span>
+    <% } else { %>
+        <div class="noData"> Aucun utilisateur n'est malheuresement inscrit sur ce merveilleux site ...</div>
+    <% } %>
+</script>
+
+<script type="text/template" id="utilisateur-list-template">
+    <tr>
+        {% if app.user %}
+        <td class="id"> <a href="{{ path('detail-utilisateur') }}/<%= user.id %>" class="openModal"><%= user.id %></a> </td>
+        {% else %}
+        <td class="id"><%= user.id %></td>
+        {% endif %}
+        <td class="nom"> <%= user.nom %> </td>
+        <td class="prenom"> <%= user.prenom %> </td>
+        {% if app.user %}
+        <td class="adresse"> <%= user.adresse %> </td>
+        <td class="email"> <%= user.email %> </td>
+        {% endif %}
+    </tr>
+</script>
+
+<script type="text/javascript">
+require([
+  'jquery',
+  'user_paginated_collection',
+  'user_app_view',
+  'user_pagination_view',
+  'user_navigation_view'
+], function(
+  $,
+  UtilisateurPaginatedCollection,
+  UtilisateurAppView,
+  UtilisateurPaginationView,
+  UtilisateurNavigationView
+) {
+    // Defer initialization until doc ready.
+    $(function() {
+      var collection = new UtilisateurPaginatedCollection({{listeUtilisateurs|json_encode|raw }}, {
+        displayPerPage: 5
+      });
+      
+      var listView = new UtilisateurAppView({collection: collection});
+      var paginationView = new UtilisateurPaginationView({collection: collection});
+      var navigationView = new UtilisateurNavigationView({collection: collection});
+      collection.pager();
+    });
+});
+</script>
+{% endblock %}

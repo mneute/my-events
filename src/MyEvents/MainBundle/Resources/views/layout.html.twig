@@ -1,0 +1,50 @@
+{% spaceless %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <title>{% block title %}{% endblock %}</title>
+        {% block js %}
+        <script data-main="/js/main" src="{{ asset('js/lib/require.js') }}"></script>
+        <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+        <script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+        {% endblock %}
+
+        {% block css %}
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/main.css') }}"/>
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/bootstrap/bootstrap-theme.min.css') }}"/>
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/bootstrap/bootstrap.min.css') }}"/>
+        {% endblock %}
+    </head>
+    <body>
+        {% block body %}
+        <div id="header">
+            <div id="user">
+                {% if app.user %}
+                <div>{{ app.user.prenom ~ ' ' ~ app.user.nom }}</div>
+                <div><a href="{{ path('deconnexion') }}">Deconnexion</a></div>
+                {% else %}
+                <div>
+                    <a id="connexion" href="{{ path('connexion') }}">Connexion</a>
+                </div>
+                <div>
+                    <a id="inscription" href="{{ path('inscription') }}">Inscription</a>
+                </div>
+                {% endif %}
+            </div>
+            <div id="menu">
+                <ul class="nav nav-pills nav-justified">
+                    <li><a href="{{ path('accueil') }}">Accueil</a></li>
+                    <li><a href="{{ path('manifestation') }}">Liste des manifestations</a></li>
+                    <li><a href="{{ path('utilisateur') }}">Liste des membres</a></li>
+                </ul>
+            </div>
+        </div>
+        <div id="contenu">
+            {% block contenu %}
+            {% endblock %}
+        </div>
+        {% endblock %}
+    </body>
+</html>
+{% endspaceless %}
