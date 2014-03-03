@@ -3,7 +3,6 @@
 namespace MyEvents\MainBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use FOS\UserBundle\Entity\User;
 
@@ -165,7 +164,7 @@ class Utilisateur extends User {
 
 	/**
 	 * Get manifestations
-	 * @return Collection
+	 * @return ArrayCollection
 	 */
 	public function getManifestations() {
 		return $this->manifestations;
@@ -191,7 +190,7 @@ class Utilisateur extends User {
 
 	/**
 	 * Get organisations
-	 * @return Collection
+	 * @return ArrayCollection
 	 */
 	public function getOrganisations() {
 		return $this->organisations;
@@ -219,7 +218,7 @@ class Utilisateur extends User {
 	/**
 	 * Get participations
 	 *
-	 * @return Collection
+	 * @return ArrayCollection
 	 */
 	public function getParticipations() {
 		return $this->participations;
@@ -245,7 +244,7 @@ class Utilisateur extends User {
 
 	/**
 	 * Get amiDemandes
-	 * @return Collection
+	 * @return ArrayCollection
 	 */
 	public function getAmiDemandes() {
 		return $this->amiDemandes;
@@ -272,7 +271,7 @@ class Utilisateur extends User {
 	/**
 	 * Get amiRecus
 	 *
-	 * @return Collection
+	 * @return ArrayCollection
 	 */
 	public function getAmiRecus() {
 		return $this->amiRecus;
@@ -333,6 +332,7 @@ class Utilisateur extends User {
 		$toAmis = new ArrayCollection();
 
 		foreach ($this->getAmiRecus() as $oAmi) {
+			/* @var $oAmi Amis */
 			if ((is_null($oAmi->getDateReponse()) && $oAmi->getUtilisateurDestinataire() == $oUtilisateur)) {
 				$toAmis->set($oAmi->getId(), $oAmi->getUtilisateurEmetteur());
 			}
@@ -345,6 +345,7 @@ class Utilisateur extends User {
 		$toAmis = new ArrayCollection();
 
 		foreach ($this->getAmiRecus() as $oAmi) {
+			/* @var $oAmi Amis */
 			if ((!is_null($oAmi->getDateReponse()) && $oAmi->getUtilisateurDestinataire() == $oUtilisateur)) {
 				$toAmis->add($oAmi->getUtilisateurEmetteur());
 			}
@@ -356,5 +357,4 @@ class Utilisateur extends User {
 	public function estAdministrateur() {
 		return in_array('ROLE_ADMIN', $this->getRoles());
 	}
-
 }
