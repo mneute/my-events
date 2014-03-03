@@ -6,4 +6,4 @@ Projet Symfony 2 ayant pour but de pouvoir créer des évènements, de les organ
 
 ##Installation
 
-Lire la [doc. d'installation](https://github.com/mneute/my-events/docs/project-install.md)
+Lire la [doc. d'installation](https://github.com/mneute/my-events/blob/master/docs/install.md)
