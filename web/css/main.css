@@ -269,6 +269,9 @@ a.amis {
     padding-top: 5px;
     border-top: solid thin grey;
 }
+.infobulle-foot div {
+    margin-bottom: 2px;
+}
 .infobulle-foot button {
     margin: 0px 2px;
 }

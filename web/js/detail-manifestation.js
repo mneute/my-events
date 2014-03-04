@@ -137,7 +137,7 @@ require([
 	 */
 	function ajouterEvenementAuMarqueur(marqueur) {
 		google.maps.event.addListener(marqueur, 'click', afficherInfoBulle);
-		google.maps.event.addListener(marqueur, 'dragend', majMarqueur);
+		google.maps.event.addListener(marqueur, 'dragend', deplacerMarqueur);
 	}
 
 	/**
@@ -159,6 +159,7 @@ require([
 					});
 					infobulle.open(map, marqueur);
 					google.maps.event.addListener(infobulle, 'domready', supprimerMarqueur);
+					google.maps.event.addListener(infobulle, 'domready', editerMarqueur);
 				}
 			});
 		}
@@ -167,11 +168,11 @@ require([
 	/**
 	 * Gestion des évènements de drag 'n drop des marqueurs
 	 */
-	var majMarqueur = function() {
+	var deplacerMarqueur = function() {
 		var marqueur = this;
 		if (marqueur.id !== undefined) {
 			$.ajax({
-				url: Routing.generate('maj-marqueur', {id: marqueur.id}),
+				url: Routing.generate('deplacer-marqueur', {id: marqueur.id}),
 				method: 'POST',
 				data: {
 					latitude: marqueur.getPosition().lat(),
@@ -217,6 +218,54 @@ require([
 			});
 		});
 	};
+
+	/**
+	 * Faire apparaître une modal Bootstrap pour éditer un marqueur
+	 */
+	var editerMarqueur = function() {
+		var infobulle = this;
+		var marqueur = infobulle.anchor;
+		var $modal = $('#editMarqueur');
+
+		$('#editer-marqueur').click(function(event) {
+			event.preventDefault();
+
+			$modal.find('.modal-content').load(Routing.generate('editer-marqueur', {id: marqueur.id}), function() {
+				$modal.modal('show');
+
+				$modal.on('shown.bs.modal', function() {
+					soumissionFormulaireEditionMarqueur($modal, marqueur);
+				});
+			});
+		});
+
+	};
+
+	/**
+	 * Soumettre le formulaire d'édition
+	 * @param {jQuery} $modal
+	 * @param {google.maps.Marker} marqueur
+	 */
+	function soumissionFormulaireEditionMarqueur($modal, marqueur) {
+		$('#valider-marqueur').click(function(event) {
+			event.preventDefault();
+			var $form = $('#editMarqueur').find('form');
+
+			$.ajax({
+				url: Routing.generate('editer-marqueur', {id: marqueur.id}),
+				method: 'POST',
+				data: $form.serialize(),
+				success: function(data) {
+					if (!data.success) {
+						alert(data.message);
+					} else {
+						$modal.modal('hide');
+						google.maps.event.trigger(marqueur, 'click');
+					}
+				}
+			});
+		});
+	}
 
 	/**
 	 * Gère les clics sur les boutons de confirmation de participation à l'évènement

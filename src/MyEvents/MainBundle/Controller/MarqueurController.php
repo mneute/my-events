@@ -7,6 +7,7 @@ use MyEvents\MainBundle\Entity\Manifestation;
 use MyEvents\MainBundle\Entity\Marqueur;
 use MyEvents\MainBundle\Entity\TypeMarqueur;
 use MyEvents\MainBundle\Entity\Utilisateur;
+use MyEvents\MainBundle\Form\Type\MarqueurType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -74,7 +75,7 @@ class MarqueurController extends Controller {
 		if ($oManifestation->peutEtreEditePar($this->oUtilisateurConnecte)) {
 			$tCoordonnees = $this->verifiePresenceLatitudeLongitude($oRequest);
 			$oTypeMarqueurRepo = $this->oManager->getRepository('MainBundle:TypeMarqueur');
-			$oTypeMarqueur = $oTypeMarqueurRepo->find(1);
+			$oTypeMarqueur = $oTypeMarqueurRepo->findOneBy(['libelle' => 'POI']);
 			/* @var $oTypeMarqueur TypeMarqueur */
 
 			$oMarqueur = new Marqueur();
@@ -97,9 +98,9 @@ class MarqueurController extends Controller {
 	}
 
 	/**
-	 * @Route("/mettre-a-jour/{id}", name="maj-marqueur", options={"expose"=true})
+	 * @Route("/{id}/deplacer", name="deplacer-marqueur", options={"expose"=true})
 	 */
-	public function majMarqueurAction(Request $oRequest, Marqueur $oMarqueur) {
+	public function deplacerAction(Request $oRequest, Marqueur $oMarqueur) {
 		if (!$oRequest->isXmlHttpRequest()) {
 			return $this->redirect($this->generateUrl('detail-manifestation', ['id' => $oMarqueur->getManifestation()->getId()]));
 		}
@@ -116,7 +117,7 @@ class MarqueurController extends Controller {
 	}
 
 	/**
-	 * @Route("/supprimer/{id}", name="supprimer-marqueur", options={"expose"=true})
+	 * @Route("/{id}/supprimer", name="supprimer-marqueur", options={"expose"=true})
 	 */
 	public function supprimerMarqueurAction(Request $oRequest, Marqueur $oMarqueur) {
 		if (!$oRequest->isXmlHttpRequest()) {
@@ -144,6 +145,31 @@ class MarqueurController extends Controller {
 	}
 
 	/**
+	 * @Route("/{id}/editer", name="editer-marqueur", options={"expose"=true})
+	 * @Template()
+	 */
+	public function editerMarqueurAction(Request $oRequest, Marqueur $oMarqueur) {
+		if (!$oRequest->isXmlHttpRequest()) {
+			return $this->redirect($this->generateUrl('detail-manifestation', ['id' => $oMarqueur->getManifestation()->getId()]));
+		}
+
+		$oForm = $this->createForm(new MarqueurType(), $oMarqueur);
+
+		if ($oRequest->isMethod('POST')) {
+			$oForm->submit($oRequest);
+			if ($oForm->isValid()) {
+				$this->oManager->flush();
+
+				return new JsonResponse(['success' => true, 'marqueur' => ['nom' => $oMarqueur->getNom()]]);
+			} else {
+				return new JsonResponse(['success' => false, 'message' => 'Erreur lors de la validation du formulaire']);
+			}
+		}
+
+		return ['form' => $oForm->createView(), 'marqueur' => $oMarqueur];
+	}
+
+	/**
 	 * Vérifie que les paramètres "latitude" et "longitude" sont présent dans le corps de la requête (POST).
 	 * S'ils ne sont pas présents, une <code>HttpException</code> est levée.
 	 * @param Request $oRequest
@@ -155,5 +181,4 @@ class MarqueurController extends Controller {
 		}
 		return ['latitude' => $latitude, 'longitude' => $longitude];
 	}
-
 }

@@ -19,8 +19,13 @@
     </div>
     <div class="infobulle-foot">
         {% if marqueur.peutEtreEditePar(app.user) %}
-        <button role="button" class="btn btn-danger btn-xs" id="supprimer-marqueur">Supprimer le marqueur</button>
-        <button role="button" class="btn btn-primary btn-xs" id="confirmer-suppression-marqueur" style="display: none;">Confirmer la suppression</button>
+        <div>
+            <button role="button" class="btn btn-primary btn-xs" id="editer-marqueur">Éditer</button>
+        </div>
+        <div>
+            <button role="button" class="btn btn-danger btn-xs" id="supprimer-marqueur">Supprimer le marqueur</button>
+            <button role="button" class="btn btn-primary btn-xs" id="confirmer-suppression-marqueur" style="display: none;">Confirmer la suppression</button>
+        </div>
         {% endif %}
     </div>
 </div>

@@ -1,0 +1,18 @@
+{% extends 'MainBundle::layout_modal.html.twig' %}
+
+{% block modal_title %}Marqueur <em>{{ marqueur.nom }}</em>{% endblock %}
+
+{% block modal_body %}
+<form class="form-horizontal" method="POST" action="{{ path('editer-marqueur', {'id': marqueur.id}) }}">
+    {{ form_row(form.nom) }}
+    {{ form_row(form.typeMarqueur) }}
+    {{ form_row(form.dateDebut) }}
+    {{ form_row(form.dateFin) }}
+    {{ form_rest(form) }}
+</form>
+{% endblock %}
+
+{% block modal_footer %}
+<button type="button" class="btn btn-danger" data-dismiss="modal">Annuler</button>
+<button type="button" class="btn btn-success" id="valider-marqueur">Valider</button>
+{% endblock %}

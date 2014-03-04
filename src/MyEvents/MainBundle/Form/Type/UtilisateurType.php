@@ -46,5 +46,4 @@ class UtilisateurType extends AbstractType {
 			'data_class' => 'MyEvents\MainBundle\Entity\Utilisateur'
 		));
 	}
-
 }
