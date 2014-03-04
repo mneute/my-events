@@ -1,0 +1,16 @@
+{% spaceless %}
+<div class="modal-header">
+    {% block modal_header %}
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h4 class="modal-title">{% block modal_title %}{% endblock %}</h4>
+    {% endblock %}
+</div>
+<div class="modal-body">
+    {% block modal_body %}
+    {% endblock %}
+</div>
+<div class="modal-footer">
+    {% block modal_footer %}
+    {% endblock %}
+</div>
+{% endspaceless %}
