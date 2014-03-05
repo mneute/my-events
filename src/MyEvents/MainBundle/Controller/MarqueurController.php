@@ -160,9 +160,7 @@ class MarqueurController extends Controller {
 			if ($oForm->isValid()) {
 				$this->oManager->flush();
 
-				return new JsonResponse(['success' => true, 'marqueur' => ['nom' => $oMarqueur->getNom()]]);
-			} else {
-				return new JsonResponse(['success' => false, 'message' => 'Erreur lors de la validation du formulaire']);
+				return new JsonResponse(['success' => TRUE, 'marqueur' => ['nom' => $oMarqueur->getNom()]]);
 			}
 		}
 

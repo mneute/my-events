@@ -257,7 +257,7 @@ require([
 				data: $form.serialize(),
 				success: function(data) {
 					if (!data.success) {
-						alert(data.message);
+						$modal.find('.modal-content').html(data);
 					} else {
 						$modal.modal('hide');
 						google.maps.event.trigger(marqueur, 'click');
